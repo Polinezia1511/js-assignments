@@ -44,7 +44,15 @@
  *
  */
 function* get99BottlesOfBeer() {
-    throw new Error('Not implemented');
+   let countBottles = 99;
+    while (countBottles > 1) {
+        yield `${countBottles} bottles of beer on the wall, ${countBottles--} bottles of beer.`;
+        yield `Take one down and pass it around, ${countBottles} ${(countBottles > 1? 'bottles':'bottle')} of beer on the wall.`;
+    }
+    yield '1 bottle of beer on the wall, 1 bottle of beer.';
+    yield 'Take one down and pass it around, no more bottles of beer on the wall.';
+    yield 'No more bottles of beer on the wall, no more bottles of beer.';
+    yield 'Go to the store and buy some more, 99 bottles of beer on the wall.';
 }
 
 
@@ -58,7 +66,13 @@ function* get99BottlesOfBeer() {
  *
  */
 function* getFibonacciSequence() {
-    throw new Error('Not implemented');
+   let [fib, prev] = [0 , 0];
+    yield fib++;
+    yield fib;
+    while (true){
+        yield fib = prev + fib;
+        prev = fib - prev;
+    }
 }
 
 
@@ -93,7 +107,16 @@ function* getFibonacciSequence() {
  *
  */
 function* depthTraversalTree(root) {
-    throw new Error('Not implemented');
+    const stack = [];
+    stack.push(root);
+    while (stack.length) {
+        let cur = stack.pop();
+        yield cur;
+        if (cur.children) {
+            cur.children.reverse().forEach(x =>
+                stack.push(x));
+        }
+    }
 }
 
 
@@ -119,7 +142,13 @@ function* depthTraversalTree(root) {
  *
  */
 function* breadthTraversalTree(root) {
-    throw new Error('Not implemented');
+    let queue = [[root]];
+    while (queue.length > 0) {
+        for (let node of queue.shift()) {
+            yield node;
+            if (node.children) queue.push(node.children);
+        }
+    }
 }
 
 
@@ -137,7 +166,19 @@ function* breadthTraversalTree(root) {
  *   [ 1, 3, 5, ... ], [ -1 ] => [ -1, 1, 3, 5, ...]
  */
 function* mergeSortedSequences(source1, source2) {
-    throw new Error('Not implemented');
+    let gen1 = source1();
+    let gen2 = source2();
+    let b = gen1.next();
+    let a = gen2.next();
+    while (!a.done || !b.done){
+        if (a.value > b.value || a.value === undefined){
+            yield b.value;
+            b = gen2.next();
+        } else {
+            yield a.value;
+            a = gen1.next();
+        }
+    } 
 }
 
 

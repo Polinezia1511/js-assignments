@@ -165,28 +165,20 @@ function UrlShortener() {
 
 UrlShortener.prototype = {
 
-    encode: function(url) {
-        let key = urlStorage.store(url);
-
-        if (!key) {
-            return this.urlAllowedChars[0];
-            }
-        const short = [];
-        const base = this.urlAllowedChars.length;
-        while (key) {
-            short.push(this.urlAllowedChars[key % base]);
-            key /= base;
+    encode: function(url) { 
+        var res = '';
+        for (let i = 0; i * 2 < url.length; i++) {
+            res += String.fromCodePoint(url.codePointAt(2 * i) * 256 + (url.codePointAt(2 * i + 1) || 0))
         }
-        return short.reverse().join('');
+        return res;
     },
-    
     decode: function(code) {
-        const base = this.urlAllowedChars.length;
-        let key = 0;
-        for (let char of code) {
-            key = key * base + this.urlAllowedChars.indexOf(char);
+        var res = '';
+        for (let i = 0; i < code.length; i++) {
+            let c = code.codePointAt(i);
+            res += String.fromCodePoint(c / 256 | 0) + (c % 256 ? String.fromCodePoint(c % 256) : '');
         }
-        return urlStorage.access(key);
+        return res;
     } 
 }
 
